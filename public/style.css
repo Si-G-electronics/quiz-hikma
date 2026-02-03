@@ -1,0 +1,96 @@
+/* Style général */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #FF5C57;
+    color: white;
+    text-align: center;
+}
+
+/* Conteneur principal */
+#app {
+    height: 100vh;
+    max-width: 1080px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Logo */
+.logo {
+    width: 240px;
+    margin: 0 auto 20px;
+}
+
+/* Boutons */
+button, .btn {
+    display: block;
+    margin: 12px auto;
+    padding: 18px;
+    font-size: 22px;
+    width: 85%;
+    background: white;
+    color: #c00000;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Bouton survol */
+button:hover, .btn:hover {
+    background: #ffd700;
+    color: #c00000;
+    transform: scale(1.05);
+}
+
+/* Bouton sélectionné */
+.btn.selected {
+    background-color: #ffd700;
+    color: #c00000;
+    transform: scale(1.05);
+}
+
+/* Champs input */
+.input {
+    padding: 16px;
+    font-size: 20px;
+    width: 85%;
+    margin: 10px auto;
+    display: block;
+    border-radius: 10px;
+    border: none;
+}
+
+/* Masquer éléments */
+.hidden { 
+    display:none; 
+}
+
+/* Compteur de questions */
+#counter {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #fff;
+}
+
+/* Bouton "Suivant" */
+.next-btn {
+    background: #fff;
+    color: #c00000;
+}
+
+.btn.good {
+  background: #00c853;
+  color: white;
+}
+
+.btn.bad {
+  background: #d50000;
+  color: white;
+}
+
+}
+

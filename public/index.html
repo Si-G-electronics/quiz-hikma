@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Hikma</title>
+
+<!-- CSS principal -->
+<link rel="stylesheet" href="style.css">
+
+<!-- Animate.css pour animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+</head>
+<body>
+
+<div id="app">
+    <img src="logo.png" class="logo animate__animated animate__fadeInDown">
+
+    <div id="quiz-box" class="animate__animated animate__fadeIn">
+        <h1 id="question"></h1>
+        <div id="answers"></div>
+        <p id="counter"></p>
+
+        <button onclick="next()" class="btn next-btn">Suivant ➡️</button>
+    </div>
+
+    <div id="end" class="hidden animate__animated animate__fadeIn">
+        <h1>Merci !</h1>
+
+        <input id="name" class="input" placeholder="Nom et Prénoms">
+        <input id="function" class="input" placeholder="Fonction">
+        <input id="place" class="input" placeholder="Lieu d'exercice">
+        <input id="email" class="input" placeholder="Email professionnel">
+
+        
+
+        <button onclick="send()" class="btn">Envoyer</button>
+        <a href="consent.pdf" target="_blank" class="btn">📄 Ouvrir le consentement</a>
+        <button onclick="restart()" class="btn">🔁 Recommencer</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
