@@ -53,6 +53,8 @@ app.post("/save", (req, res) => {
     res.json({ ok: true });
 });
 
-app.listen(3000, "0.0.0.0", () => {
-    console.log("Serveur lancé sur le réseau");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Serveur lancé sur le port ${PORT}`);
 });
