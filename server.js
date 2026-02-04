@@ -1,28 +1,30 @@
+// server.js
 const express = require("express");
 const path = require("path");
 const Airtable = require("airtable");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // ✅ Une seule déclaration
 
 // 🔐 Variables d’environnement (Render)
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-const AIRTABLE_TABLE_NAME = "HikmaQuiz";
+const AIRTABLE_TABLE_NAME = "HikmaQuiz"; // Le nom exact de ta table Airtable
 
+// Connexion Airtable
 const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
 
-// Middleware
+// Middleware pour lire JSON et formulaires
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Servir le front
 app.use(express.static(path.join(__dirname, "public")));
 
-// API pour enregistrer les données
+// API pour enregistrer les réponses
 app.post("/save", async (req, res) => {
   try {
-    const { name, email, company, score } = req.body;
+    const { name, email, company, score, answers } = req.body;
 
     if (!name || !email) {
       return res.status(400).json({ error: "Nom et Email requis" });
@@ -31,8 +33,9 @@ app.post("/save", async (req, res) => {
     await base(AIRTABLE_TABLE_NAME).create({
       Name: name,
       Email: email,
-      Company: company,
-      Score: score || 0
+      Company: company || "",
+      Score: score || 0,
+      Answers: answers ? JSON.stringify(answers) : ""
     });
 
     res.json({ success: true });
@@ -42,11 +45,12 @@ app.post("/save", async (req, res) => {
   }
 });
 
-// Fallback SPA
+// Fallback SPA (React ou site statique)
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Lancement du serveur
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Serveur lancé sur le port " + PORT);
 });
