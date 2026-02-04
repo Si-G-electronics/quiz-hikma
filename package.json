@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "express": "^5.2.1",
-    "airtable": "^1.9.0"
+    "airtable": "^0.12.1"
   }
 }
