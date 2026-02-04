@@ -10,4 +10,8 @@
     "express": "^5.2.1",
     "airtable": "^0.12.1"
   }
+"engines": {
+  "node": "18.x"
+}
+
 }
