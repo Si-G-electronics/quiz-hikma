@@ -1,60 +1,52 @@
 const express = require("express");
-const fs = require("fs");
-const XLSX = require("xlsx");
+const path = require("path");
+const Airtable = require("airtable");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-/* 🔥 IMPORTANT */
+// 🔐 Variables d’environnement (Render)
+const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+const AIRTABLE_TABLE_NAME = "HikmaQuiz";
+
+const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static("public"));
+// Servir le front
+app.use(express.static(path.join(__dirname, "public")));
 
-const FILE = "participants.xlsx";
+// API pour enregistrer les données
+app.post("/save", async (req, res) => {
+  try {
+    const { name, email, company, score } = req.body;
 
-app.post("/save", (req, res) => {
-    console.log("RECU :", req.body); // DEBUG
-
-    const data = req.body;
-
-    if (!data || Object.keys(data).length === 0) {
-        return res.status(400).json({ error: "Aucune donnée reçue" });
+    if (!name || !email) {
+      return res.status(400).json({ error: "Nom et Email requis" });
     }
 
-    let workbook;
-    let worksheet;
+    await base(AIRTABLE_TABLE_NAME).create({
+      Name: name,
+      Email: email,
+      Company: company,
+      Score: score || 0
+    });
 
-    if (fs.existsSync(FILE)) {
-        workbook = XLSX.readFile(FILE);
-        worksheet = workbook.Sheets["Participants"];
-    } else {
-        workbook = XLSX.utils.book_new();
-        worksheet = XLSX.utils.json_to_sheet([]);
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
-    }
-
-    const oldData = XLSX.utils.sheet_to_json(worksheet);
-    oldData.push(data);
-
-    const newSheet = XLSX.utils.json_to_sheet(oldData);
-
-    // AUTO WIDTH
-    const cols = Object.keys(oldData[0]).map(key => ({
-        wch: Math.max(
-            key.length,
-            ...oldData.map(row => row[key] ? row[key].toString().length : 10)
-        ) + 2
-    }));
-    newSheet["!cols"] = cols;
-
-    workbook.Sheets["Participants"] = newSheet;
-    XLSX.writeFile(workbook, FILE);
-
-    res.json({ ok: true });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Erreur Airtable:", err);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
 });
 
-const PORT = process.env.PORT || 3000;
+// Fallback SPA
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Serveur lancé sur le port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
