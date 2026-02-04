@@ -1,17 +1,13 @@
 {
   "name": "hikma-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
- "scripts": {
-  "start": "node server.js"
-}
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "main": "server.js",
   "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "express": "^5.2.1",
-    "xlsx": "^0.18.5"
+    "airtable": "^1.9.1"
   }
 }
