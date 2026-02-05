@@ -15,6 +15,10 @@ app.post("/save", (req, res) => {
   try {
     const data = req.body;
 
+    // --- CETTE LIGNE AJOUTE L'AFFICHAGE DANS LES LOGS RENDER ---
+    console.log("RECU :", data);
+    // ----------------------------------------------------------
+
     let workbook;
     let worksheet;
 
@@ -37,7 +41,7 @@ app.post("/save", (req, res) => {
 
     res.json({ ok: true });
   } catch (err) {
-    console.log(err);
+    console.log("ERREUR :", err);
     res.status(500).send("Erreur serveur");
   }
 });
