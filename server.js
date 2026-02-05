@@ -1,44 +1,47 @@
 const express = require("express");
+const fs = require("fs");
+const XLSX = require("xlsx");
 const path = require("path");
-const Airtable = require("airtable");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
-const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-const AIRTABLE_TABLE_NAME = "HikmaQuiz"; 
-
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+const FILE = path.join(__dirname, "participants.xlsx");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.post("/save", async (req, res) => {
+app.post("/save", (req, res) => {
   try {
-    const { name, email, company, score, answers } = req.body;
-    if (!name || !email) return res.status(400).json({ error: "Nom et Email requis" });
+    const data = req.body;
 
-    await base(AIRTABLE_TABLE_NAME).create({
-      "Name": name,
-      "Email": email,
-      "Company": company || "",
-      "Score": score || 0,
-      "Answers": answers ? JSON.stringify(answers) : ""
-    });
-    res.json({ success: true });
+    let workbook;
+    let worksheet;
+
+    if (fs.existsSync(FILE)) {
+      workbook = XLSX.readFile(FILE);
+      worksheet = workbook.Sheets["Participants"];
+    } else {
+      workbook = XLSX.utils.book_new();
+      worksheet = XLSX.utils.json_to_sheet([]);
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
+    }
+
+    const oldData = XLSX.utils.sheet_to_json(worksheet);
+    oldData.push(data);
+
+    const newSheet = XLSX.utils.json_to_sheet(oldData);
+    workbook.Sheets["Participants"] = newSheet;
+
+    XLSX.writeFile(workbook, FILE);
+
+    res.json({ ok: true });
   } catch (err) {
-    console.error("Airtable error:", err);
-    res.status(500).json({ error: "Erreur", details: err.message });
+    console.log(err);
+    res.status(500).send("Erreur serveur");
   }
 });
 
-// LA CORRECTION EST ICI : (.*) au lieu de *
-app.get("(.*)", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Serveur lancé sur le port " + PORT);
 });

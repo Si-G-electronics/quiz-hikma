@@ -58,7 +58,7 @@ function load() {
   questions[current].a.forEach((ans, i) => {
     const btn = document.createElement("button");
     btn.innerText = ans;
-    btn.className = "btn";
+    btn.className = "btn animate__animated animate__fadeIn";
     btn.dataset.letter = String.fromCharCode(65 + i);
     btn.onclick = () => btn.classList.toggle("selected");
     a.appendChild(btn);
@@ -124,21 +124,26 @@ function restart() {
 }
 
 function send() {
+  const name = document.getElementById("name").value;
+  const func = document.getElementById("function").value;
+  const place = document.getElementById("place").value;
+  const email = document.getElementById("email").value;
+
   fetch("/save", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
-      name: document.getElementById("name").value,
-      func: document.getElementById("function").value,
-      place: document.getElementById("place").value,
-      email: document.getElementById("email").value,
+      name,
+      func,
+      place,
+      email,
       score: finalScore,
-      date: new Date().toLocaleString(),
-      answers: JSON.stringify(userAnswers)
+      answers: userAnswers,
+      date: new Date()
     })
-  });
-
-  alert("Merci pour votre participation !");
+  })
+  .then(() => alert("Merci pour votre participation !"))
+  .catch(() => alert("Erreur d'envoi"));
 }
 
 load();
