@@ -6,8 +6,8 @@ const XLSX = require("xlsx");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// --- CONNEXION À TA BASE MONGODB ATLAS ---
-const MONGO_URI = "mongodb+srv://sidali_admin:sidali.561@cluster0.50vs1m8.mongodb.net/hikma_db?retryWrites=true&w=majority";
+// Remplace la ligne MONGO_URI par celle-ci dans ton server.js
+const MONGO_URI = "mongodb+srv://hikma_admin:sidali.561@cluster0.50vs1m8.mongodb.net/hikma_db?retryWrites=true&w=majority";
 // Note : J'ai ajouté /hikma_db dans le lien pour créer automatiquement le nom de la base.
 
 mongoose.connect(MONGO_URI)
